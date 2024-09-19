@@ -21,7 +21,7 @@ def save_processed_data(batch_df, batch_id):
         .option("database", "traffic") \
         .option("collection", "processed_data") \
         .option("upsertDocument", True) \
-        .option("idFieldList", "t, link") \
+        .option("idFieldList", "time, link") \
         .option("operationType", "update") \
         .save()
     
@@ -48,13 +48,13 @@ if __name__ == "__main__":
         
     schema = StructType([
         StructField("name", StringType(), True),
-        StructField("orig", StringType(), True),
-        StructField("dest", StringType(), True),
-        StructField("t", StringType(), True),
+        StructField("origin", StringType(), True),
+        StructField("destination", StringType(), True),
+        StructField("time", StringType(), True),
         StructField("link", StringType(), True),
-        StructField("x", DoubleType(), True),
-        StructField("s", DoubleType(), True),
-        StructField("v", DoubleType(), True)
+        StructField("position", DoubleType(), True),
+        StructField("spacing", DoubleType(), True),
+        StructField("speed", DoubleType(), True)
     ])
 
     # Streaming data from Kafka topic as a dataframe
@@ -78,11 +78,11 @@ if __name__ == "__main__":
     # Processing dataframe 
     lines = lines\
         .filter(lines.link!='trip_end') \
-        .select("t", "link", "v")\
-        .groupBy("t", "link")\
-        .agg(avg("v").alias("avg_SPEED"),
+        .select("time", "link", "speed")\
+        .groupBy("time", "link")\
+        .agg(avg("speed").alias("avg_SPEED"),
              count("link").alias("num_VEHICLES"))\
-        .select("t", "link", "avg_SPEED", "num_VEHICLES")
+        .select("time", "link", "avg_SPEED", "num_VEHICLES")
 
     # Writing dataframe (processed data) to database in update mode
     processed_data = lines \
