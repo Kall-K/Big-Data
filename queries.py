@@ -36,11 +36,6 @@ def main():
     start_time = input('Give Start Time (YYYY-MM-DD hh:mm:ss): ')
     end_time = input('Give End Time (YYYY-MM-DD hh:mm:ss): ')
     query = input('Select query (1 or 2 or 3): ')
-    
-    # Recommended values
-    # start_time="2024-09-07 13:56:49"
-    # end_time="2024-09-08 13:57:04"
-    # query=3
 
     client = MongoClient('localhost', 27017)
     db = client['traffic']
